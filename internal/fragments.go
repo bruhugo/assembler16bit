@@ -7,7 +7,7 @@ const (
 	FragmentTypeLabel
 )
 
-// struct Fragment is an intermidiate data structure
+// Fragment is an intermidiate data structure
 // made for the compiler to consume and generate the
 // appropriate binary
 type Fragment struct {

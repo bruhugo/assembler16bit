@@ -55,6 +55,21 @@ func (t *Tokenizer) NewToken() Token {
 		token = &SimpleToken{
 			t: TokenTypeDot,
 		}
+	case r == '[':
+		t.i++
+		token = &SimpleToken{
+			t: TokenTypeLeftBrackets,
+		}
+	case r == ']':
+		t.i++
+		token = &SimpleToken{
+			t: TokenTypeRightBrackets,
+		}
+	case r == ':':
+		t.i++
+		token = &SimpleToken{
+			t: TokenTypeColon,
+		}
 	case isAlnum(r):
 		token = t.getWord()
 	case r == '\n':

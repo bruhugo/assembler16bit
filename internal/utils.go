@@ -5,7 +5,7 @@ func isDigit(r rune) bool {
 }
 
 func isAlnum(r rune) bool {
-	return isDigit(r) || (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'z')
+	return isDigit(r) || (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')
 }
 
 func isHexDigit(r rune) bool {

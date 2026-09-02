@@ -13,13 +13,14 @@ func NewParser(text string) *Parser {
 }
 
 func (p *Parser) Program() *Fragment {
-	f := &Fragment{}
+	dummy := &Fragment{}
+	f := dummy
 	for p.t.CurType() != TokenTypeEOF {
 		f.Next = p.Line()
 		f = f.Next
 	}
 
-	return f.Next
+	return dummy.Next
 }
 
 func (p *Parser) Line() *Fragment {
@@ -46,7 +47,7 @@ func (p *Parser) Label() *Fragment {
 	p.t.AssertAndNext(TokenTypeDot)
 	l := p.t.AssertAndNext(TokenTypeLabel)
 	lVal := l.(*TokenLabel).label
-	p.t.AssertAndNext(TokenTypeComa)
+	p.t.AssertAndNext(TokenTypeColon)
 
 	return NewFragmentLabel(lVal)
 }

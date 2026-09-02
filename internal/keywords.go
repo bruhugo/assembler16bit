@@ -18,12 +18,12 @@ var reservedKeywords = map[string]Token{
 	},
 	"JMP": &TokenInstruction{
 		Base:   3,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral),
+		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
 		Param2: NewParameterFormat(false),
 	},
 	"JMPZ": &TokenInstruction{
 		Base:   4,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral),
+		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
 		Param2: NewParameterFormat(false),
 	},
 	"JMPN": &TokenInstruction{

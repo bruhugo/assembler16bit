@@ -52,13 +52,25 @@ func TestParseInstruction(t *testing.T) {
 			"LOAD r0, 0x1000",
 			false,
 			ParamFragment{t: ParameterTypeRegister, val: 0},
-			ParamFragment{t: ParameterTypeLiteral, val: 4096},
+			ParamFragment{t: ParameterTypeLiteral, val: 0x1000},
 		},
 		{
 			"LOAD r0, 0xABC",
 			false,
 			ParamFragment{t: ParameterTypeRegister, val: 0},
-			ParamFragment{t: ParameterTypeLiteral, val: 2748},
+			ParamFragment{t: ParameterTypeLiteral, val: 0xABC},
+		},
+		{
+			"LOAD r0, 0xDEF",
+			false,
+			ParamFragment{t: ParameterTypeRegister, val: 0},
+			ParamFragment{t: ParameterTypeLiteral, val: 0xDEF},
+		},
+		{
+			"LOAD r0, [r0]",
+			false,
+			ParamFragment{t: ParameterTypeRegister, val: 0},
+			ParamFragment{t: ParameterTypeAddress, val: 0},
 		},
 		{
 			"RET",
@@ -68,6 +80,12 @@ func TestParseInstruction(t *testing.T) {
 		},
 		{
 			"CALL label",
+			false,
+			ParamFragment{t: ParameterTypeLabel, label: "label"},
+			ParamFragment{t: ParameterTypeNone},
+		},
+		{
+			".label:",
 			false,
 			ParamFragment{t: ParameterTypeLabel, label: "label"},
 			ParamFragment{t: ParameterTypeNone},

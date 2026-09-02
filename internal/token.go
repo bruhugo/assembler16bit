@@ -12,6 +12,11 @@ const (
 	ParameterTypeLabel
 )
 
+func (p ParameterType) IsLiteralType() bool {
+	return p == ParameterTypeLabel ||
+		p == ParameterTypeLiteral
+}
+
 type ParameterSet map[ParameterType]struct{}
 
 type TokenType int
@@ -26,6 +31,7 @@ const (
 	TokenTypeDot
 	TokenTypeLeftBrackets
 	TokenTypeRightBrackets
+	TokenTypeColon
 	TokenTypeEOF
 )
 
