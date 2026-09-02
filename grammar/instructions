@@ -1,0 +1,45 @@
+MOV rx, rx
+MOV rx, lit
+
+MOV outx, rx
+MOV outx, lit
+
+MOV rx, inx
+
+LOAD rx, lit
+LOAD rx, [rx]
+
+STR lit, rx
+STR [rx], rx
+
+PUSH rx
+PUSH lit
+
+POP rx
+
+ADD rx, rx
+ADD rx, lit
+
+SUB rx, rx
+SUB rx, lit
+
+MUL rx, rx
+MUL rx, lit
+
+DIV rx, rx
+DIV rx, lit
+
+SHL rx, rx
+SHL rx, lit
+
+
+Param -> {
+    paramTypes: [output, literal, rx, address]
+    val: integer
+}
+
+Instruction -> {
+    param1 -> Param   
+    param2 -> Param
+}
+
