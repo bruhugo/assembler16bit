@@ -55,6 +55,12 @@ func TestParseInstruction(t *testing.T) {
 			ParamFragment{t: ParameterTypeLiteral, val: 4096},
 		},
 		{
+			"LOAD r0, 0xABC",
+			false,
+			ParamFragment{t: ParameterTypeRegister, val: 0},
+			ParamFragment{t: ParameterTypeLiteral, val: 2748},
+		},
+		{
 			"RET",
 			false,
 			ParamFragment{t: ParameterTypeNone},
