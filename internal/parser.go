@@ -34,8 +34,11 @@ func (p *Parser) Line() *Fragment {
 		panic(p.t.errMsg("expected either an instruction or a label"))
 	}
 
-	p.t.AssertAndNext(TokenTypeNewLine)
+	if p.t.CurType() == TokenTypeEOF {
+		return f
+	}
 
+	p.t.AssertAndNext(TokenTypeNewLine)
 	return f
 }
 
@@ -52,6 +55,9 @@ func (p *Parser) Instruction() *Fragment {
 	token := p.t.AssertAndNext(TokenTypeInstruction).(*TokenInstruction)
 
 	param1 := p.Parameter(token.Param1)
+	if token.Param2.isRequired {
+		p.t.AssertAndNext(TokenTypeComa)
+	}
 	param2 := p.Parameter(token.Param2)
 
 	return NewFragmentInstruction(token.Base, param1, param2)

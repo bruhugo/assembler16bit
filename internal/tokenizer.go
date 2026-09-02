@@ -26,34 +26,50 @@ func (t *Tokenizer) NewToken() Token {
 	t.skipSpaces()
 	for !t.isDone() && t.curRune() == ';' {
 		t.skipComment()
+		t.skipSpaces()
 	}
 
+	if t.isDone() {
+		t.curToken = &SimpleToken{
+			t: TokenTypeEOF,
+		}
+		return t.curToken
+
+	}
+
+	var token Token
 	r := t.curRune()
 	switch {
 	case isDigit(r):
-		return &TokenParameter{
+		token = &TokenParameter{
 			val:       uint16(t.getNumber()),
 			paramType: ParameterTypeLiteral,
 		}
 	case r == ',':
 		t.i++
-		return &SimpleToken{
+		token = &SimpleToken{
 			t: TokenTypeComa,
 		}
 	case r == '.':
 		t.i++
-		return &SimpleToken{
+		token = &SimpleToken{
 			t: TokenTypeDot,
 		}
 	case isAlnum(r):
-		return t.getWord()
+		token = t.getWord()
 	case r == '\n':
-		return &SimpleToken{
+		t.line++
+		t.column = 0
+		t.i++
+		token = &SimpleToken{
 			t: TokenTypeNewLine,
 		}
 	default:
 		panic(fmt.Sprintf("unexpected token in line %d and column %d", t.line, t.column))
 	}
+
+	t.curToken = token
+	return token
 }
 
 func (t *Tokenizer) AssertAndNext(tp TokenType) Token {
@@ -77,7 +93,7 @@ func (t *Tokenizer) skipSpaces() {
 }
 
 func (t *Tokenizer) isDone() bool {
-	return len(t.r) > t.i
+	return len(t.r) <= t.i
 }
 
 func (t *Tokenizer) curRune() rune {
@@ -95,25 +111,59 @@ func (t *Tokenizer) skipComment() {
 }
 
 func (t *Tokenizer) getNumber() uint16 {
-	var base uint16 = 10
-
 	if t.isHex() {
 		t.i += 2
-		base = 16
+		return t.getHex()
 	} else if t.isBin() {
 		t.i += 2
-		base = 2
-	}
-
-	// in case the user types "0x" or "0b" alone
-	if !isDigit(t.curRune()) {
-		panic("invalid integer literal")
+		return t.getBin()
 	}
 
 	var val uint16 = 0
 	for !t.isDone() && isDigit(t.curRune()) {
-		val *= base
-		val += uint16(t.curRune() - 9)
+		val *= 10
+		val += uint16(t.curRune() - '0')
+		t.i++
+	}
+
+	return val
+}
+
+func (t *Tokenizer) getHex() uint16 {
+	var val uint16 = 0
+	for !t.isDone() && isHexDigit(t.curRune()) {
+		cur := t.curRune()
+		val *= 16
+		switch {
+		case isDigit(cur):
+			val += uint16(cur - '0')
+		case cur == 'a' || cur == 'A':
+			val += 10
+		case cur == 'b' || cur == 'B':
+			val += 11
+		case cur == 'c' || cur == 'C':
+			val += 12
+		case cur == 'd' || cur == 'D':
+			val += 13
+		case cur == 'e' || cur == 'E':
+			val += 14
+		case cur == 'f' || cur == 'F':
+			val += 15
+		default:
+			// should not be able to get here, but just to make sure
+			panic(t.errMsg("invalid hex format"))
+		}
+		t.i++
+	}
+	return val
+}
+
+func (t *Tokenizer) getBin() uint16 {
+	var val uint16
+
+	for !t.isDone() && (t.curRune() == '1' || t.curRune() == '0') {
+		val *= 2
+		val += uint16(t.curRune() - '0')
 		t.i++
 	}
 
@@ -140,6 +190,7 @@ func (t *Tokenizer) getWord() Token {
 	sb := strings.Builder{}
 	for !t.isDone() && isAlnum(t.curRune()) {
 		sb.WriteRune(t.curRune())
+		t.i++
 	}
 	str := sb.String()
 

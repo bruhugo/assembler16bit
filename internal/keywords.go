@@ -103,7 +103,7 @@ var reservedKeywords = map[string]Token{
 	},
 	"CALL": &TokenInstruction{
 		Base:   20,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral),
+		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
 		Param2: NewParameterFormat(false),
 	},
 	"RET": &TokenInstruction{
