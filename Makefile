@@ -12,3 +12,9 @@ cover:
 
 bench:
 	TEST_PROGRAM=../programs/test_all go test -count=5 -v -bench=. ./...
+
+bench-store:
+	./scripts/benchmark.sh
+
+benchstat:
+	benchstat benchmarks/*
