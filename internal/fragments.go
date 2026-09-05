@@ -7,6 +7,17 @@ const (
 	FragmentTypeLabel
 )
 
+func (f FragmentType) String() string {
+	switch f {
+	case FragmentTypeInstruction:
+		return "FragmentTypeInstruction"
+	case FragmentTypeLabel:
+		return "FragmentTypeLabel"
+	default:
+		return ""
+	}
+}
+
 // Fragment is an intermidiate data structure
 // made for the compiler to consume and generate the
 // appropriate binary

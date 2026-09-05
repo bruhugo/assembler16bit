@@ -24,13 +24,19 @@ func (p *Parser) Program() *Fragment {
 }
 
 func (p *Parser) Line() *Fragment {
+	for p.t.CurType() == TokenTypeNewLine {
+		p.t.AssertAndNext(TokenTypeNewLine)
+	}
+
 	curType := p.t.CurType()
 	var f *Fragment
 	switch curType {
 	case TokenTypeInstruction:
 		f = p.Instruction()
-	case TokenTypeDot:
+	case TokenTypeLabel:
 		f = p.Label()
+	case TokenTypeEOF:
+		return nil
 	default:
 		panic(p.t.errMsg("expected either an instruction or a label"))
 	}
@@ -44,7 +50,6 @@ func (p *Parser) Line() *Fragment {
 }
 
 func (p *Parser) Label() *Fragment {
-	p.t.AssertAndNext(TokenTypeDot)
 	l := p.t.AssertAndNext(TokenTypeLabel)
 	lVal := l.(*TokenLabel).label
 	p.t.AssertAndNext(TokenTypeColon)

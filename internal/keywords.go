@@ -14,7 +14,7 @@ var reservedKeywords = map[string]Token{
 	"STR": &TokenInstruction{
 		Base:   2,
 		Param1: NewParameterFormat(true, ParameterTypeAddress, ParameterTypeLiteral),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Param2: NewParameterFormat(true, ParameterTypeRegister),
 	},
 	"JMP": &TokenInstruction{
 		Base:   3,
@@ -28,7 +28,7 @@ var reservedKeywords = map[string]Token{
 	},
 	"JMPN": &TokenInstruction{
 		Base:   5,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral),
+		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
 		Param2: NewParameterFormat(false),
 	},
 	"ADD": &TokenInstruction{
@@ -117,9 +117,9 @@ var reservedKeywords = map[string]Token{
 		Param2: NewParameterFormat(false),
 	},
 	"CMP": &TokenInstruction{
-		Base:   22,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeRegister, ParameterTypeLiteral),
+		Base:   23,
+		Param1: NewParameterFormat(true, ParameterTypeRegister, ParameterTypeLiteral),
+		Param2: NewParameterFormat(false),
 	},
 	"r0": &TokenParameter{
 		paramType: ParameterTypeRegister,
@@ -152,10 +152,6 @@ var reservedKeywords = map[string]Token{
 	"r7": &TokenParameter{
 		paramType: ParameterTypeRegister,
 		val:       7,
-	},
-	"r8": &TokenParameter{
-		paramType: ParameterTypeRegister,
-		val:       8,
 	},
 	"out0": &TokenParameter{
 		paramType: ParameterTypeOutput,

@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+const LogisimHeader = "v2.0 raw\n"
+
 type AssembleOption int
 
 const (
@@ -79,19 +81,29 @@ func (a *Assembler) Assemble(w io.Writer, option AssembleOption) {
 
 func writeSimulideOption(writer io.Writer, inst []uint16) error {
 	w := bufio.NewWriter(writer)
-	_, err := w.Write([]byte("v2.0 raw\n"))
+	_, err := w.Write([]byte(LogisimHeader))
 	if err != nil {
 		return fmt.Errorf("error writing to output file: %w", err)
 	}
-	for _, instruction := range inst {
+	printInstructionHeader()
+	for i, instruction := range inst {
 		_, err := w.WriteString(strconv.FormatInt(int64(instruction), 16))
 		if err != nil {
 			return fmt.Errorf("error writing to output file: %w", err)
 		}
 
+		printInstruction(instruction)
+
 		_, err = w.WriteString(" ")
 		if err != nil {
 			return fmt.Errorf("error writing to output file: %w", err)
+		}
+		if i%10 == 9 {
+			_, err = w.WriteString("\n")
+			if err != nil {
+				return fmt.Errorf("error writing to output file: %w", err)
+			}
+
 		}
 	}
 	err = w.Flush()
@@ -138,6 +150,9 @@ func getInstructionValue(f *Fragment) uint16 {
 }
 
 func getSrcValue(f *Fragment) uint16 {
+	if f.Base == 13 || f.Base == 23 {
+		return getDestValue(f) << 3
+	}
 	switch f.Param2.t {
 	case ParameterTypeAddress, ParameterTypeRegister, ParameterTypeInput:
 		return f.Param2.val << OffsetSrc
@@ -147,7 +162,7 @@ func getSrcValue(f *Fragment) uint16 {
 }
 
 func getDestValue(f *Fragment) uint16 {
-	switch f.Param2.t {
+	switch f.Param1.t {
 	case ParameterTypeAddress, ParameterTypeOutput, ParameterTypeRegister:
 		return f.Param1.val << OffsetDest
 	default:
@@ -168,4 +183,22 @@ func getIOValue(f *Fragment) uint16 {
 
 func isLiteral(f *Fragment) bool {
 	return f.Param1.t.IsLiteralType() || f.Param2.t.IsLiteralType()
+}
+
+func printInstructionHeader() {
+	fmt.Printf("%5s %3s %3s %2s %1s 00\n\n", "BASE", "SRC", "DEST", "IO", "L")
+}
+
+func printInstruction(inst uint16) {
+	base := inst >> OffsetInstructionID & 0b11111
+	src := inst >> OffsetSrc & 0b111
+	dest := inst >> OffsetDest & 0b111
+	io := inst >> OffsetIO & 0b11
+	l := inst >> OffsetLiteral & 1
+
+	fmt.Printf("%05s %03s %03s %02s %01s 00\n", toB(base), toB(src), toB(dest), toB(io), toB(l))
+}
+
+func toB(i uint16) string {
+	return strconv.FormatUint(uint64(i), 2)
 }
