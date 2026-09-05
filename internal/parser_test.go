@@ -108,6 +108,9 @@ func TestParseInstruction(t *testing.T) {
 
 	for _, test := range tb {
 		t.Run(test.text, func(t *testing.T) {
+			t.Parallel()
+			defer testPanic(t, test.shouldPanic)
+
 			parser := NewParser(test.text)
 			f := parser.Line()
 
@@ -122,15 +125,48 @@ func TestParseInstruction(t *testing.T) {
 			if !reflect.DeepEqual(f.Param2, test.param2) {
 				t.Errorf("params 2 are not equal. want: %v got: %v", test.param2, f.Param2)
 			}
-
-			defer func() {
-				v := recover()
-				if v != nil && !test.shouldPanic {
-					t.Errorf("should not have panicked: %v", v)
-				} else if v == nil && test.shouldPanic {
-					t.Errorf("should have panicked: %v", v)
-				}
-			}()
 		})
+	}
+}
+
+func TestParseProgram(t *testing.T) {
+	tb := []struct {
+		program       string
+		fragmentTypes []FragmentType
+		shouldPanic   bool
+	}{
+		{
+			"MOV r0, r0",
+			[]FragmentType{FragmentTypeInstruction},
+			false,
+		},
+		{
+			"label: \n MOV r0, 0x0 \n label2:",
+			[]FragmentType{FragmentTypeLabel, FragmentTypeInstruction, FragmentTypeLabel},
+			false,
+		},
+		{
+			"",
+			[]FragmentType{},
+			false,
+		},
+		{
+			",",
+			[]FragmentType{},
+			true,
+		},
+	}
+
+	for _, test := range tb {
+		defer testPanic(t, test.shouldPanic)
+
+		parser := NewParser(test.program)
+		i := 0
+		for cur := parser.Program(); cur != nil; cur = cur.Next {
+			if cur.Type != test.fragmentTypes[i] {
+				t.Errorf("Expected fragment type %s but got %s", test.fragmentTypes[i], cur.Type)
+			}
+			i++
+		}
 	}
 }

@@ -36,7 +36,7 @@ func NewAssembler(text string) *Assembler {
 	}
 }
 
-func (a *Assembler) Assemble(w io.Writer, option AssembleOption) {
+func (a *Assembler) Assemble(w io.Writer, option AssembleOption, verbose bool) {
 	var count uint16 = 0
 	symbolTable := make(map[string]uint16)
 
@@ -72,27 +72,31 @@ func (a *Assembler) Assemble(w io.Writer, option AssembleOption) {
 
 	switch option {
 	case AssembleOptionLogisim:
-		err := writeSimulideOption(w, inst)
+		err := writeSimulideOption(w, inst, verbose)
 		if err != nil {
 			panic(err)
 		}
 	}
 }
 
-func writeSimulideOption(writer io.Writer, inst []uint16) error {
+func writeSimulideOption(writer io.Writer, inst []uint16, verbose bool) error {
 	w := bufio.NewWriter(writer)
 	_, err := w.Write([]byte(LogisimHeader))
 	if err != nil {
 		return fmt.Errorf("error writing to output file: %w", err)
 	}
-	printInstructionHeader()
+	if verbose {
+		printInstructionHeader()
+	}
 	for i, instruction := range inst {
 		_, err := w.WriteString(strconv.FormatInt(int64(instruction), 16))
 		if err != nil {
 			return fmt.Errorf("error writing to output file: %w", err)
 		}
 
-		printInstruction(instruction)
+		if verbose {
+			printInstruction(instruction)
+		}
 
 		_, err = w.WriteString(" ")
 		if err != nil {

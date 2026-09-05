@@ -6,7 +6,6 @@ type Parser struct {
 
 func NewParser(text string) *Parser {
 	t := NewTokenizer(text)
-	t.NewToken()
 	return &Parser{
 		t: t,
 	}

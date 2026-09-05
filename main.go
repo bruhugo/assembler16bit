@@ -28,5 +28,5 @@ func main() {
 	}
 
 	as := assembler.NewAssembler(string(program))
-	as.Assemble(outputFile, assembler.AssembleOptionLogisim)
+	as.Assemble(outputFile, assembler.AssembleOptionLogisim, true)
 }

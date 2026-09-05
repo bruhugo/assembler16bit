@@ -32,14 +32,6 @@ DIV rx, lit
 SHL rx, rx
 SHL rx, lit
 
-
-Param -> {
-    paramTypes: [output, literal, rx, address]
-    val: integer
-}
-
-Instruction -> {
-    param1 -> Param   
-    param2 -> Param
-}
+CMP rx      ; CMP subtracts r0 from the given 
+CMP lit     ; value and sets the flags
 

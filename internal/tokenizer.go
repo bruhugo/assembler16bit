@@ -14,10 +14,12 @@ type Tokenizer struct {
 }
 
 func NewTokenizer(program string) *Tokenizer {
-	return &Tokenizer{
+	t := &Tokenizer{
 		r:    []rune(program),
 		line: 1,
 	}
+	t.NewToken()
+	return t
 }
 
 // NewToken fetches the next token and sets int
