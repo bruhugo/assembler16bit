@@ -154,7 +154,12 @@ func getInstructionValue(f *Fragment) uint16 {
 }
 
 func getSrcValue(f *Fragment) uint16 {
-	if f.Base == 13 || f.Base == 23 {
+	// PUSH CMP
+	if f.Base == 13 ||
+		f.Base == 23 ||
+		f.Base == 8 ||
+		f.Base == 9 ||
+		f.Base == 12 {
 		return getDestValue(f) << 3
 	}
 	switch f.Param2.t {

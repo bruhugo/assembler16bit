@@ -64,7 +64,7 @@ var reservedKeywords = map[string]Token{
 	"NOT": &TokenInstruction{
 		Base:   12,
 		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Param2: NewParameterFormat(false),
 	},
 	"PUSH": &TokenInstruction{
 		Base:   13,

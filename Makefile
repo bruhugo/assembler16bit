@@ -1,4 +1,6 @@
 
+p ?= test
+
 .PHONY: test
 
 test:
@@ -18,3 +20,6 @@ bench-store:
 
 benchstat:
 	benchstat benchmarks/*
+
+run:
+	go run . -i programs/${p} -o output -v
