@@ -154,12 +154,13 @@ func getInstructionValue(f *Fragment) uint16 {
 }
 
 func getSrcValue(f *Fragment) uint16 {
-	// PUSH CMP
-	if f.Base == 13 ||
-		f.Base == 23 ||
-		f.Base == 8 ||
-		f.Base == 9 ||
-		f.Base == 12 {
+	// some instructions dont take the second parameter
+	// and should get the source from the destination parameter
+	if f.Base == 8 || // INC
+		f.Base == 9 || // DEC
+		f.Base == 12 || // NOT
+		f.Base == 13 || // PUSH
+		f.Base == 23 { // CMP
 		return getDestValue(f) << 3
 	}
 	switch f.Param2.t {
