@@ -15,27 +15,22 @@ loop:
     JMP loop
 
 calc:
-    ROT r0, 1
-    PUSH r0
+    
+    MOV r0, 1
+    ROT r1, r1
+    MOV r0, 1
+    ROT r2, r2
+    MOV r0, 1
+    ROT r3, r3
+    MOV r0, 1
+    ROT r4, r4
+    MOV r0, 1
+    ROT r5, r5
+    MOV r0, 1
+    ROT r6, r6
+    MOV r0, 1
+    ROT r7, r7
 
-    MOV r0, r1
-    ROT r1, 1
-    MOV r0, r2
-    ROT r2, 1
-    MOV r0, r3
-    ROT r3, 1
-    MOV r0, r4
-    ROT r4, 1
-    MOV r0, r5
-    ROT r5, 1
-    MOV r0, r6
-    ROT r6, 1
-    MOV r0, r7
-    ROT r7, 1
-
-    POP r0
-
-    MOV out0, r0
     MOV out1, r1
     MOV out2, r2
     MOV out3, r3
