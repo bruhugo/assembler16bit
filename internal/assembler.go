@@ -18,14 +18,6 @@ const (
 	AssembleOptionRaw
 )
 
-const (
-	OffsetInstructionID = 11
-	OffsetSrc           = 8
-	OffsetDest          = 5
-	OffsetIO            = 3
-	OffsetLiteral       = 2
-)
-
 type Assembler struct {
 	parser *Parser
 }
@@ -142,23 +134,18 @@ func getLiteralParam(param ParamFragment, symbols map[string]uint16) uint16 {
 
 func getInstructionValue(f *Fragment) uint16 {
 	var inst uint16
-	inst |= f.Base << OutputOffsetOps
-	inst |= getInstructionParam(f.Src0)
-	inst |= getInstructionParam(f.Src1)
-	inst |= getInstructionParam(f.Dest)
-	inst |= getIOValue(f)
-	if isLiteral(f) {
-		inst |= 1 << OffsetLiteral
+	inst |= f.Base << OutputOffsetInst
+	inst |= f.Src0.val << OutputOffsetSrc0
+	if f.Src1.t != ParameterTypeLiteral {
+		inst |= f.Src1.val << OutputOffsetSrc1
 	}
+	inst |= f.Dest.val << OutputOffsetDest
+	inst |= getOpsValue(f)
 
 	return inst
 }
 
-func getInstructionParam(p ParamFragment) uint16 {
-	return p.val << uint16(p.outputOffset)
-}
-
-func getIOValue(f *Fragment) uint16 {
+func getOpsValue(f *Fragment) uint16 {
 	if f.Src1.t.IsLiteralType() {
 		return 0b11
 	}
@@ -179,17 +166,23 @@ func isLiteral(f *Fragment) bool {
 }
 
 func printInstructionHeader() {
-	fmt.Printf("%5s %3s %3s %2s %1s 00\n\n", "BASE", "SRC", "DEST", "IO", "L")
+	fmt.Printf("%5s %3s %3s %3s %2s\n\n", "BASE", "SR0", "SR1", "DST", "OP")
 }
 
 func printInstruction(inst uint16) {
-	base := inst >> OffsetInstructionID & 0b11111
-	src := inst >> OffsetSrc & 0b111
-	dest := inst >> OffsetDest & 0b111
-	io := inst >> OffsetIO & 0b11
-	l := inst >> OffsetLiteral & 1
+	base := inst >> OutputOffsetInst & 0b11111
+	src0 := inst >> OutputOffsetSrc0 & 0b111
+	src1 := inst >> OutputOffsetSrc1 & 0b111
+	dest := inst >> OutputOffsetDest & 0b111
+	op := inst >> OutputOffsetOps & 0b11
 
-	fmt.Printf("%05s %03s %03s %02s %01s 00\n", toB(base), toB(src), toB(dest), toB(io), toB(l))
+	fmt.Printf("%05s %03s %03s %03s %02s\n",
+		toB(base),
+		toB(src0),
+		toB(src1),
+		toB(dest),
+		toB(op),
+	)
 }
 
 func toB(i uint16) string {

@@ -60,13 +60,17 @@ func (p *Parser) Instruction() *Fragment {
 	var dest, src0, src1 ParamFragment
 	token := p.t.AssertAndNext(TokenTypeInstruction).(*TokenInstruction)
 
-	params := make([]ParamFragment, 0)
-	for p.t.CurType() == TokenTypeParameter {
-		params = append(params, p.Parameter())
+	if p.t.CurType() != TokenTypeParameter && p.t.CurType() != TokenTypeLabel {
+		return NewFragmentInstruction(token.Base, src0, src1, dest)
 	}
 
-	if len(params) == 0 {
-		return NewFragmentInstruction(token.Base, src0, src1, dest)
+	params := []ParamFragment{
+		p.Parameter(),
+	}
+
+	for p.t.CurType() == TokenTypeComa {
+		p.t.AssertAndNext(TokenTypeComa)
+		params = append(params, p.Parameter())
 	}
 
 	paramsIndex := len(params) - 1
@@ -84,13 +88,19 @@ func (p *Parser) Instruction() *Fragment {
 			panic(p.t.errMsg("parameter of invalid type"))
 		}
 
-		switch curParam.outputOffset {
-		case OutputOffsetDest:
-			dest = curParam
-		case OutputOffsetSrc0:
-			src0 = curParam
-		case OutputOffsetSrc1:
-			src1 = curParam
+		offsets := t.outputOffsets
+		if len(offsets) == 0 {
+			offsets = []OutputOffset{t.outputOffset}
+		}
+		for _, offset := range offsets {
+			switch offset {
+			case OutputOffsetDest:
+				dest = curParam
+			case OutputOffsetSrc0:
+				src0 = curParam
+			case OutputOffsetSrc1:
+				src1 = curParam
+			}
 		}
 	}
 

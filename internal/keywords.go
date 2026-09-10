@@ -60,7 +60,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -75,7 +75,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -92,7 +92,7 @@ var reservedKeywords = map[string]Token{
 				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
 			},
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 		},
@@ -104,7 +104,7 @@ var reservedKeywords = map[string]Token{
 				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
 			},
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 		},
@@ -114,7 +114,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -129,7 +129,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -172,7 +172,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -187,7 +187,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -202,7 +202,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -217,7 +217,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{
@@ -232,7 +232,7 @@ var reservedKeywords = map[string]Token{
 		Params: [][]*ParameterFormat{
 			nil,
 			{
-				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister).WithOffset(OutputOffsetSrc0),
 				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
 			},
 			{

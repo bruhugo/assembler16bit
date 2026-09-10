@@ -34,10 +34,9 @@ type Fragment struct {
 }
 
 type ParamFragment struct {
-	t            ParameterType
-	val          uint16
-	label        string
-	outputOffset OutputOffset
+	t     ParameterType
+	val   uint16
+	label string
 }
 
 func NewFragmentLabel(label string) *Fragment {

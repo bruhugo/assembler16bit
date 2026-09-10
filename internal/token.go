@@ -50,9 +50,9 @@ type Token interface {
 }
 
 type ParameterFormat struct {
-	isRequired   bool
-	allowedTypes ParameterSet
-	outputOffset OutputOffset
+	allowedTypes  ParameterSet
+	outputOffset  OutputOffset
+	outputOffsets []OutputOffset
 }
 
 func NewParameterFormat(outputOffset OutputOffset, allowedTypes ...ParameterType) *ParameterFormat {
@@ -61,9 +61,15 @@ func NewParameterFormat(outputOffset OutputOffset, allowedTypes ...ParameterType
 		set[t] = struct{}{}
 	}
 	return &ParameterFormat{
-		allowedTypes: set,
-		outputOffset: outputOffset,
+		allowedTypes:  set,
+		outputOffset:  outputOffset,
+		outputOffsets: []OutputOffset{outputOffset},
 	}
+}
+
+func (p *ParameterFormat) WithOffset(offset OutputOffset) *ParameterFormat {
+	p.outputOffsets = append(p.outputOffsets, offset)
+	return p
 }
 
 type TokenInstruction struct {

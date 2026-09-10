@@ -1,6 +1,5 @@
 ; This program rotates the bits of each register and output it
 
-
     MOV r0, 0b00000001
     MOV r1, 0b00000010
     MOV r2, 0b00000100
@@ -15,22 +14,16 @@ loop:
     JMP loop
 
 calc:
-    
-    MOV r0, 1
-    ROT r1, r1
-    MOV r0, 1
-    ROT r2, r2
-    MOV r0, 1
-    ROT r3, r3
-    MOV r0, 1
-    ROT r4, r4
-    MOV r0, 1
-    ROT r5, r5
-    MOV r0, 1
-    ROT r6, r6
-    MOV r0, 1
-    ROT r7, r7
+    ROT r0, 1
+    ROT r1, 1
+    ROT r2, 1
+    ROT r3, 1
+    ROT r4, 1
+    ROT r5, 1
+    ROT r6, 1
+    ROT r7, 1
 
+    MOV out0, r0
     MOV out1, r1
     MOV out2, r2
     MOV out3, r3
