@@ -2,124 +2,271 @@ package assembler
 
 var reservedKeywords = map[string]Token{
 	"MOV": &TokenInstruction{
-		Base:   0,
-		Param1: NewParameterFormat(true, ParameterTypeOutput, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeInput, ParameterTypeRegister, ParameterTypeLiteral),
+		Base: 0,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister, ParameterTypeOutput),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeInput, ParameterTypeLiteral),
+			},
+		},
 	},
 	"LOAD": &TokenInstruction{
-		Base:   1,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeAddress, ParameterTypeLiteral),
+		Base: 1,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeAddress, ParameterTypeLiteral, ParameterTypeLabel),
+			},
+		},
 	},
 	"STR": &TokenInstruction{
-		Base:   2,
-		Param1: NewParameterFormat(true, ParameterTypeAddress, ParameterTypeLiteral),
-		Param2: NewParameterFormat(true, ParameterTypeRegister),
+		Base: 2,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeAddress, ParameterTypeLiteral, ParameterTypeLabel),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+			},
+		},
 	},
 	"JMP": &TokenInstruction{
-		Base:   3,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
-		Param2: NewParameterFormat(false),
+		Base: 3,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeLiteral, ParameterTypeLabel),
+			},
+		},
 	},
 	"JMPZ": &TokenInstruction{
-		Base:   4,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
-		Param2: NewParameterFormat(false),
+		Base: 4,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeLiteral, ParameterTypeLabel),
+			},
+		},
 	},
 	"JMPN": &TokenInstruction{
-		Base:   5,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
-		Param2: NewParameterFormat(false),
+		Base: 5,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeLiteral, ParameterTypeLabel),
+			},
+		},
 	},
 	"ADD": &TokenInstruction{
-		Base:   6,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 6,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"SUB": &TokenInstruction{
-		Base:   7,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 7,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"INC": &TokenInstruction{
-		Base:   8,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(false),
+		Base: 8,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"DEC": &TokenInstruction{
-		Base:   9,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(false),
+		Base: 9,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"AND": &TokenInstruction{
-		Base:   10,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 10,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"OR": &TokenInstruction{
-		Base:   11,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 11,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"NOT": &TokenInstruction{
-		Base:   12,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(false),
+		Base: 12,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"PUSH": &TokenInstruction{
-		Base:   13,
-		Param1: NewParameterFormat(true, ParameterTypeRegister, ParameterTypeLiteral),
-		Param2: NewParameterFormat(false),
+		Base: 13,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"POP": &TokenInstruction{
-		Base:   14,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(false),
+		Base: 14,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+			},
+		},
 	},
 	"SHL": &TokenInstruction{
-		Base:   15,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 15,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"SHR": &TokenInstruction{
-		Base:   16,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 16,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"ROT": &TokenInstruction{
-		Base:   17,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 17,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"MUL": &TokenInstruction{
-		Base:   18,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 18,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"DIV": &TokenInstruction{
-		Base:   19,
-		Param1: NewParameterFormat(true, ParameterTypeRegister),
-		Param2: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeRegister),
+		Base: 19,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+			{
+				NewParameterFormat(OutputOffsetDest, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"CALL": &TokenInstruction{
-		Base:   20,
-		Param1: NewParameterFormat(true, ParameterTypeLiteral, ParameterTypeLabel),
-		Param2: NewParameterFormat(false),
+		Base: 20,
+		Params: [][]*ParameterFormat{
+			{
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeLiteral, ParameterTypeLabel),
+			},
+		},
 	},
 	"RET": &TokenInstruction{
 		Base:   21,
-		Param1: NewParameterFormat(false),
-		Param2: NewParameterFormat(false),
+		Params: nil,
 	},
 	"HLT": &TokenInstruction{
 		Base:   22,
-		Param1: NewParameterFormat(false),
-		Param2: NewParameterFormat(false),
+		Params: nil,
 	},
 	"CMP": &TokenInstruction{
-		Base:   23,
-		Param1: NewParameterFormat(true, ParameterTypeRegister, ParameterTypeLiteral),
-		Param2: NewParameterFormat(false),
+		Base: 23,
+		Params: [][]*ParameterFormat{
+			nil,
+			{
+				NewParameterFormat(OutputOffsetSrc0, ParameterTypeRegister),
+				NewParameterFormat(OutputOffsetSrc1, ParameterTypeRegister, ParameterTypeLiteral),
+			},
+		},
 	},
 	"r0": &TokenParameter{
 		paramType: ParameterTypeRegister,

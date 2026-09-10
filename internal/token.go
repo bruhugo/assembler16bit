@@ -35,6 +35,16 @@ const (
 	TokenTypeEOF
 )
 
+type OutputOffset uint16
+
+const (
+	OutputOffsetInst = 11
+	OutputOffsetSrc0 = 8
+	OutputOffsetSrc1 = 5
+	OutputOffsetDest = 2
+	OutputOffsetOps  = 0
+)
+
 type Token interface {
 	Type() TokenType
 }
@@ -42,22 +52,24 @@ type Token interface {
 type ParameterFormat struct {
 	isRequired   bool
 	allowedTypes ParameterSet
+	outputOffset OutputOffset
 }
 
-func NewParameterFormat(required bool, allowedTypes ...ParameterType) ParameterFormat {
+func NewParameterFormat(outputOffset OutputOffset, allowedTypes ...ParameterType) *ParameterFormat {
 	set := make(ParameterSet)
 	for _, t := range allowedTypes {
 		set[t] = struct{}{}
 	}
-	return ParameterFormat{
-		isRequired:   required,
+	return &ParameterFormat{
 		allowedTypes: set,
+		outputOffset: outputOffset,
 	}
 }
 
 type TokenInstruction struct {
-	Param1 ParameterFormat
-	Param2 ParameterFormat
+	// each instruction can have up to three params,
+	// and depending on the quantity, the semantic might change
+	Params [][]*ParameterFormat
 	// the instruction is distinguished from the others
 	// by a 5 bit field
 	Base uint16

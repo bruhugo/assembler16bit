@@ -118,18 +118,18 @@ func writeSimulideOption(writer io.Writer, inst []uint16, verbose bool) error {
 }
 
 func getLiteralValue(f *Fragment, symbols map[string]uint16) (uint16, bool) {
-	switch {
-	case f.Param1.t == ParameterTypeLabel:
-		return getLiteralParam(f.Param1, symbols), true
-	case f.Param2.t == ParameterTypeLabel:
-		return getLiteralParam(f.Param2, symbols), true
-	case f.Param1.t == ParameterTypeLiteral:
-		return f.Param1.val, true
-	case f.Param2.t == ParameterTypeLiteral:
-		return f.Param2.val, true
-	default:
-		return 0, false
+	switch f.Src1.t {
+	case ParameterTypeLabel:
+		val, ok := symbols[f.Src1.label]
+		if !ok {
+			return 0, false
+		}
+		return val, true
+
+	case ParameterTypeLiteral:
+		return f.Src1.val, true
 	}
+	return 0, false
 }
 
 func getLiteralParam(param ParamFragment, symbols map[string]uint16) uint16 {
@@ -142,9 +142,10 @@ func getLiteralParam(param ParamFragment, symbols map[string]uint16) uint16 {
 
 func getInstructionValue(f *Fragment) uint16 {
 	var inst uint16
-	inst |= f.Base << OffsetInstructionID
-	inst |= getSrcValue(f)
-	inst |= getDestValue(f)
+	inst |= f.Base << OutputOffsetOps
+	inst |= getInstructionParam(f.Src0)
+	inst |= getInstructionParam(f.Src1)
+	inst |= getInstructionParam(f.Dest)
 	inst |= getIOValue(f)
 	if isLiteral(f) {
 		inst |= 1 << OffsetLiteral
@@ -153,46 +154,28 @@ func getInstructionValue(f *Fragment) uint16 {
 	return inst
 }
 
-func getSrcValue(f *Fragment) uint16 {
-	// some instructions dont take the second parameter
-	// and should get the source from the destination parameter
-	if f.Base == 8 || // INC
-		f.Base == 9 || // DEC
-		f.Base == 12 || // NOT
-		f.Base == 13 || // PUSH
-		f.Base == 23 { // CMP
-		return getDestValue(f) << 3
-	}
-	switch f.Param2.t {
-	case ParameterTypeAddress, ParameterTypeRegister, ParameterTypeInput:
-		return f.Param2.val << OffsetSrc
-	default:
-		return 0
-	}
-}
-
-func getDestValue(f *Fragment) uint16 {
-	switch f.Param1.t {
-	case ParameterTypeAddress, ParameterTypeOutput, ParameterTypeRegister:
-		return f.Param1.val << OffsetDest
-	default:
-		return 0
-	}
+func getInstructionParam(p ParamFragment) uint16 {
+	return p.val << uint16(p.outputOffset)
 }
 
 func getIOValue(f *Fragment) uint16 {
-	var io uint16
-	if f.Param1.t == ParameterTypeOutput {
-		io |= 0b10
+	if f.Src1.t.IsLiteralType() {
+		return 0b11
 	}
-	if f.Param2.t == ParameterTypeInput {
-		io |= 0b01
+
+	if f.Src1.t == ParameterTypeInput {
+		return 0b01
 	}
-	return io << OffsetIO
+
+	if f.Dest.t == ParameterTypeOutput {
+		return 0b10
+	}
+
+	return 0
 }
 
 func isLiteral(f *Fragment) bool {
-	return f.Param1.t.IsLiteralType() || f.Param2.t.IsLiteralType()
+	return f.Src1.t.IsLiteralType()
 }
 
 func printInstructionHeader() {

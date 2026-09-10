@@ -57,31 +57,47 @@ func (p *Parser) Label() *Fragment {
 }
 
 func (p *Parser) Instruction() *Fragment {
+	var dest, src0, src1 ParamFragment
 	token := p.t.AssertAndNext(TokenTypeInstruction).(*TokenInstruction)
 
-	param1 := p.Parameter(token.Param1)
-	if token.Param2.isRequired {
-		p.t.AssertAndNext(TokenTypeComa)
+	params := make([]ParamFragment, 0)
+	for p.t.CurType() == TokenTypeParameter {
+		params = append(params, p.Parameter())
 	}
-	param2 := p.Parameter(token.Param2)
 
-	return NewFragmentInstruction(token.Base, param1, param2)
+	if len(params) == 0 {
+		return NewFragmentInstruction(token.Base, src0, src1, dest)
+	}
+
+	paramsIndex := len(params) - 1
+
+	// the number of parameters is greater or less than the required number
+	if paramsIndex >= len(token.Params) || token.Params[paramsIndex] == nil {
+		panic(p.t.errMsg("unexpected number of parameters"))
+	}
+
+	paramTokens := token.Params[paramsIndex]
+	for i, t := range paramTokens {
+		curParam := params[i]
+		_, ok := t.allowedTypes[curParam.t]
+		if !ok {
+			panic(p.t.errMsg("parameter of invalid type"))
+		}
+
+		switch curParam.outputOffset {
+		case OutputOffsetDest:
+			dest = curParam
+		case OutputOffsetSrc0:
+			src0 = curParam
+		case OutputOffsetSrc1:
+			src1 = curParam
+		}
+	}
+
+	return NewFragmentInstruction(token.Base, src0, src1, dest)
 }
 
-func (p *Parser) Parameter(f ParameterFormat) ParamFragment {
-	if !f.isRequired {
-		return ParamFragment{t: ParameterTypeNone}
-	}
-
-	param := p.GetParameter()
-	if _, ok := f.allowedTypes[param.t]; !ok {
-		panic(p.t.errMsg("invalid parameter type"))
-	}
-
-	return param
-}
-
-func (p *Parser) GetParameter() ParamFragment {
+func (p *Parser) Parameter() ParamFragment {
 	var paramFragment ParamFragment
 	switch p.t.CurType() {
 	case TokenTypeLabel:

@@ -27,15 +27,17 @@ type Fragment struct {
 
 	Label string
 
-	Base   uint16
-	Param1 ParamFragment
-	Param2 ParamFragment
+	Base uint16
+	Dest ParamFragment
+	Src0 ParamFragment
+	Src1 ParamFragment
 }
 
 type ParamFragment struct {
-	t     ParameterType
-	val   uint16
-	label string
+	t            ParameterType
+	val          uint16
+	label        string
+	outputOffset OutputOffset
 }
 
 func NewFragmentLabel(label string) *Fragment {
@@ -45,11 +47,12 @@ func NewFragmentLabel(label string) *Fragment {
 	}
 }
 
-func NewFragmentInstruction(base uint16, param1, param2 ParamFragment) *Fragment {
+func NewFragmentInstruction(base uint16, src0, src1, dest ParamFragment) *Fragment {
 	return &Fragment{
-		Type:   FragmentTypeInstruction,
-		Base:   base,
-		Param1: param1,
-		Param2: param2,
+		Type: FragmentTypeInstruction,
+		Base: base,
+		Dest: dest,
+		Src0: src0,
+		Src1: src1,
 	}
 }
