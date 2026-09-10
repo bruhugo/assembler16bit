@@ -60,7 +60,9 @@ func (p *Parser) Instruction() *Fragment {
 	var dest, src0, src1 ParamFragment
 	token := p.t.AssertAndNext(TokenTypeInstruction).(*TokenInstruction)
 
-	if p.t.CurType() != TokenTypeParameter && p.t.CurType() != TokenTypeLabel {
+	if p.t.CurType() != TokenTypeParameter &&
+		p.t.CurType() != TokenTypeLabel &&
+		p.t.CurType() != TokenTypeLeftBrackets {
 		return NewFragmentInstruction(token.Base, src0, src1, dest)
 	}
 
