@@ -124,14 +124,6 @@ func getLiteralValue(f *Fragment, symbols map[string]uint16) (uint16, bool) {
 	return 0, false
 }
 
-func getLiteralParam(param ParamFragment, symbols map[string]uint16) uint16 {
-	v, ok := symbols[param.label]
-	if !ok {
-		panic(fmt.Sprintf("symbol %s was not defined", param.label))
-	}
-	return v
-}
-
 func getInstructionValue(f *Fragment) uint16 {
 	var inst uint16
 	inst |= f.Base << OutputOffsetInst

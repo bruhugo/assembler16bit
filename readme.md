@@ -1,6 +1,6 @@
 # 16 bit assembler written in Golang
 
-I'm building a 16-bit computer in a simulator called Logisim, and in order to write programs faster, I made an assembler written in Go that translates common assembly instructions into machine code instructions. 
+I'm building a 16-bit computer in a simulator called Logisim, and in order to write programs faster, I made an assembler written in Go that translates common assembly instructions into machine code instructions.
 
 ## Assembler structure
 
@@ -8,34 +8,31 @@ The assembler is divided in three main parts, each performing one specific task.
 
 ### Tokenizer
 
-This component is responsible for transforming the plain text program file into well defined units that the program can later consume. Those units are usually called tokens. 
+This component is responsible for transforming the plain text program file into well defined units that the program can later consume. Those units are usually called tokens.
 
 ### Parser
 
-The parser is responsible for consuming the tokens and making sure that it follows the appropriate structure defined by my assembly language grammar. It's basically a simple state machine. After ensuring its structure, the parser transforms the stream of tokens into an intermediate data structure designed to be easily consumed by the assembler component. This data structure is called a fragment and is similar to what the GCC assembler does. 
+The parser is responsible for consuming the tokens and making sure that it follows the appropriate structure defined by my assembly language grammar. It's basically a simple state machine. After ensuring its structure, the parser transforms the stream of tokens into an intermediate data structure designed to be easily consumed by the assembler component. This data structure is called a fragment and is similar to what the GCC assembler does.
 
-### Assembler 
+### Assembler
 
-This final component consumes the fragments and transforms them into binary following the instruction structure. It also has a very simple symbol table (hash map) of labels. Its a two-pass assembler, so it first scans the fragments for label symbols, and then iterates them again to populate it when it's used. 
+This final component consumes the fragments and transforms them into binary following the instruction structure. It also has a very simple symbol table (hash map) of labels. Its a two-pass assembler, so it first scans the fragments for label symbols, and then iterates them again to populate it when it's used.
 
 <img width="1549" height="687" alt="image" src="https://github.com/user-attachments/assets/e8c31554-0363-4e95-a9aa-bcfd614be2ab" />
-
 
 ## Why Go?
 
 I'm too lazy to write it in C
 
-
 ## Instruction format
 
 Each instruction is composed of 16 bits, but it can be extended to 32 bits in order to allow addresses and numbers to be passed to the instruction. The structure goes as follows:
 
-- 0-1:     unused
-- 2:       if set, extends the instruction to 32 bits
-- 3-4:     IO operations
-- 5-7:     destination register/output of the instructions
-- 8-10:    source register/input of the instruction
-- 11-15:   the instruction number
+- 0-1:      operations (IO and extend)
+- 2-4:      destination register
+- 5-7:      source 1 register
+- 8-10:     source 0 register
+- 11-15:    the instruction number
 
 ## Instruction set
 
@@ -52,9 +49,9 @@ Each instruction is composed of 16 bits, but it can be extended to 32 bits in or
 - 10: AND
 - 11: OR
 - 12: NOT
-- 13: PUSH 
+- 13: PUSH
 - 14: POP
-- 15: SHL 
+- 15: SHL
 - 16: SHR
 - 17: ROT
 - 18: MUL
@@ -64,11 +61,18 @@ Each instruction is composed of 16 bits, but it can be extended to 32 bits in or
 - 22: HLT
 - 23: CMP
 
-OBS: In my computers architecture, every second parameter of an ALU opearation will always be r0. For example the follownig instruction:
+## Parameters
 
-ADD r3, r1
+The instructions might take 0, 1, 2 or even three parameters. For example:
 
-performs r1 + r0 and puts the result in r3. It's done like that because 16 bits is not enough to allow two source registers. (it's probably possible, but changing it would require a lot of work so I'll leave it like that :) )
+- RET
+- PUSH r0
+- MOV r0, r1
+- ADD r0, r1, r2
+
+Notice that some instructions that take three parameters can also take only two. In those cases, the source 0 offset will be the same as destination. Example:
+
+ADD r0, r0, r1  is the same as  ADD r0, r1
 
 ## How to use the assembler
 
@@ -76,4 +80,4 @@ Download the binary located in the release page of this repository and download 
 
 ./assembler -i inputFile -o outputFile
 
-and it should output the binary file. (use -v for dumping the instructions in stdout, usefull for debugging). After that, load the output file into the instruction memory box in Logisim and start your program! 
+and it should output the binary file. (use -v for dumping the instructions in stdout, usefull for debugging). After that, load the output file into the instruction memory box in Logisim and start your program!
