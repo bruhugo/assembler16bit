@@ -795,7 +795,6 @@
       <a name="incoming" val="4"/>
       <a name="appear" val="center"/>
     </comp>
-    <comp loc="(650,510)" name="Decoder_InstructionFilter"/>
     <comp lib="0" loc="(1050,480)" name="Tunnel">
       <a name="width" val="2"/>
       <a name="label" val="IO OPS"/>
